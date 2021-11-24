@@ -52,7 +52,7 @@
         '32' : 'Tray 구동 실패'
     }
 
-    var socket = io.connect('http://127.0.0.1:5000?client=monitor');
+    var socket = io.connect('http://localhost:5000?client=monitor', headers={'AGV_NO':'Monitoring'});
     var agvCount = 0;
     var agvList = [];
 
@@ -117,11 +117,11 @@
     });
 
     socket.on('agv_connect_to_monitor', function(agvNo) {
-        $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">AGV" + agvNo + "가 연결되었습니다.</p><br></br>");
+        $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">" + agvNo + "가 연결되었습니다.</p>");
     });
 
     socket.on('agv_disconnect_to_monitor', function(agvNo) {
-        $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">AGV" + agvNo + "가 없어졌습니다.</p><br></br>");
+        $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">" + agvNo + "가 없어졌습니다.</p>");
     });
 
 

@@ -86,7 +86,7 @@ def connect():
         clients[client]['AGV_NO'] = client
         clients[client]['blocks'] = make_route()
         clients[client]['destination'] = clients[client]['blocks'][-1]
-
+        socketio.emit('agv_connect_to_monitor', clients[client]['AGV_NO'])
         with thread_lock:
             if thread is None:
                 thread = socketio.start_background_task(background_thread)
@@ -107,11 +107,14 @@ def alarm(data):
 @socketio.on('disconnect')
 def disconnect():
     client = request.args.get('client')
-    socketio.emit('agv_disconnect_to_monitor', clients[client]['AGV_NO'])
-    del clients[client]
+    if client == 'monitor':
+        print("monitor disconnect")
+    else:
+        socketio.emit('agv_disconnect_to_monitor', clients[client]['AGV_NO'])
+        del clients[client]
 
 if __name__=="__main__":
     argument = sys.argv
     host = argument[1] if len(argument) == 2 else 'localhost'
 
-    socketio.run(app, host=host)
+    socketio.run(app, host=host, debug=True)
