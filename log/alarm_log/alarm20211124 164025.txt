@@ -1,0 +1,6 @@
+{"DATA_TYPE": "alarm", "AGV_NO": "agv00001", "ALARMS": [{"ALARM_CD": "16", "ALARM_STATUS": 1, "ALARM_DTL": "후진 후, 위치 오류", "OCCUR_DT": "20211124 16:40:30", "END_DT": null}]}
+{"DATA_TYPE": "alarm", "AGV_NO": "agv00001", "ALARMS": [{"ALARM_CD": "16", "ALARM_STATUS": 1, "ALARM_DTL": "후진 후, 위치 오류", "OCCUR_DT": "20211124 16:40:30", "END_DT": null}]}
+{"DATA_TYPE": "alarm", "AGV_NO": "agv00001", "ALARMS": [{"ALARM_CD": "14", "ALARM_STATUS": 1, "ALARM_DTL": "좌 90도회전 후, 위치 오류", "OCCUR_DT": "20211124 16:40:31", "END_DT": null}]}
+{"DATA_TYPE": "alarm", "AGV_NO": "agv00001", "ALARMS": [{"ALARM_CD": "14", "ALARM_STATUS": 1, "ALARM_DTL": "좌 90도회전 후, 위치 오류", "OCCUR_DT": "20211124 16:40:31", "END_DT": null}]}
+{"DATA_TYPE": "alarm", "AGV_NO": "agv00001", "ALARMS": [{"ALARM_CD": "22", "ALARM_STATUS": 1, "ALARM_DTL": "과전류 발생", "OCCUR_DT": "20211124 16:40:32", "END_DT": null}]}
+{"DATA_TYPE": "alarm", "AGV_NO": "agv00001", "ALARMS": [{"ALARM_CD": "22", "ALARM_STATUS": 1, "ALARM_DTL": "과전류 발생", "OCCUR_DT": "20211124 16:40:32", "END_DT": null}]}

@@ -75,12 +75,12 @@ def background_thread():
 @socketio.on('connect')
 def connect():
     global thread
-
+    print(request)
     client = request.args.get('client')
     if client == 'monitor':     #모니터 connect 
         print('Monitor connected')
     else:
-        print(client + ' connected')
+        print(str(client) + ' connected')
         clients[client] = {}
         clients[client]['sid'] = request.sid
         clients[client]['AGV_NO'] = client
