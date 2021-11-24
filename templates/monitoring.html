@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.0/socket.io.min.js"></script>
 </head>
 <body>
-    <div id="server" style="height: 1000px; posision: relative">
+    <div id="server" style="max-height: 1000px; posision: relative">
         <div id="map" style="width:980px; height:680px; display: inline-block;">
             <table style="width:980px; max-height:980px">
                 <tbody>
@@ -15,10 +15,10 @@
                 </tbody>
             </table>
         </div>
-        <div id="log" style="padding-left: 20px; display: inline-block; width: 300px; height: 680px; background-color: black; color: white;">
+        <div id="log" style="overflow:scroll; padding-left: 20px; display: inline-block; width: 450px; height: 680px; background-color: black; color: white;">
         </div>
-        <div id="clients" style="background-color: grey; width: 300px; height: 680px; display: inline-block">
-        </div>
+    </div>
+    <div id="clients" style="background-color: grey; width: 1450px; height: 400px; display: inline-block">
     </div>
 
 <style>
@@ -30,10 +30,10 @@
   }
   tr {
     width: 1000px;
-    height: 20px;
+    height: 25px;
   }
   td {
-    width: 20px;
+    width: 30px;
   }
 </style>
 
@@ -54,7 +54,7 @@
 
     var socket = io.connect('http://localhost:5000?client=monitor', headers={'AGV_NO':'Monitoring'});
     var agvCount = 0;
-    var agvList = [];
+    var agvList = {};
 
     function findAGV(agvNo) {
         for (var i = 0; i < agvList.length; i++) {
@@ -65,11 +65,11 @@
         return -1;
     }
 
-    function drawAgvOnBoard(xIdx, yIdx){
-        $("tr").eq(yIdx).children().eq(xIdx).css("background-color", "#00FF00");
-    }
-    function warnAgvOnBoard(xIdx, yIdx){
-        $("tr").eq(yIdx).children().eq(xIdx).css("background-color", "#FF0000");  
+    function drawAgvOnBoard(xIdx, yIdx, color, agvNo){
+        var tdID = (yIdx-1)*30 + (xIdx-1);
+        console.log("draw " + agvNo + xIdx + yIdx);
+        $("td").eq(tdID).css("background-color", color);
+        $("td").eq(tdID).html(agvNo.substr(5,3));
     }
 
     $(document).ready(function(){
@@ -104,14 +104,15 @@
     });*/
 
     socket.on('alarm_to_monitor', function(data) {
+        data = JSON.parse(data);
         var agvNo = data['AGV_NO'];
         var alarms = data['ALARMS'];
         for (var i = 0; i < alarms.length; i++) {
             if (alarms[i]['ALARM_STATUS'] == '1') {
-                $("#log").append("<p style=\"color: red; padding: 0px; margin: 0px;\">알람 발생!!! AGV" + agvNo + ": " + alarms_dict[alarms[i]['ALARM_CD']] + "!!!</p><br></br>");
+                $("#log").append("<p style=\"color: red; padding: 0px; margin: 0px;\">알람 발생!!! " + agvNo + ": " + alarms_dict[alarms[i]['ALARM_CD']] + "!!!</p>");
             }
             else {
-                $("#log").append("<p style=\"color: blue; padding: 0px; margin: 0px;\">알람 해제!!! AGV" + agvNo + ": " + alarms_dict[alarms[i]['ALARM_CD']] + "!!!</p><br></br>");
+                $("#log").append("<p style=\"color: blue; padding: 0px; margin: 0px;\">알람 해제!!! " + agvNo + ": " + alarms_dict[alarms[i]['ALARM_CD']] + "!!!</p>");
             }
         }
     });
@@ -127,14 +128,14 @@
 
 
     socket.on('state_to_monitor', function(data){
+        data = JSON.parse(data);
+        var loc = data['LOCATION'];
+        var xIdx = Number(loc.substr(0,4));
+        var yIdx = Number(loc.substr(4,4));
+        console.log(xIdx + " " + yIdx);
+        drawAgvOnBoard(xIdx, yIdx, "#00FF00", data['AGV_NO']);
         var agvNo = data['AGV_NO'];
-        var idx = findAGV(agvNo);
-        if (idx != -1) {
-            agvList.push(data);
-        }
-        else {
-            agvList[idx] = data
-        }
+        agvList[agvNo] = data;
     });
 
 /*    socket.on('agvStatusToIndex', function(agvStatus) {
