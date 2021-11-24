@@ -20,7 +20,6 @@
     </div>
     <div id="clients" style="background-color: grey; width: 1450px; height: 400px; display: inline-block">
     </div>
-
 <style>
   table {
     border: 1px solid #444444;
@@ -132,9 +131,14 @@
         var loc = data['LOCATION'];
         var xIdx = Number(loc.substr(0,4));
         var yIdx = Number(loc.substr(4,4));
-        console.log(xIdx + " " + yIdx);
         drawAgvOnBoard(xIdx, yIdx, "#00FF00", data['AGV_NO']);
         var agvNo = data['AGV_NO'];
+        var origLoc = agvList[agvNo]['LOCATION'];
+        if (origLoc != loc) {
+            var origXIdx = Number(origLoc.substr(0,4));
+            var origYIdx = Number(origLoc.substr(4,4));
+            drawAgvOnBoard(origXIdx, origYIdx, "#000000", "");
+        }
         agvList[agvNo] = data;
     });
 
