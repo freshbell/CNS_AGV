@@ -61,13 +61,10 @@ async def random_alarm():
 async def send_alarm():
     time_count = 0
     while True:
-        if time_count % 2 == 0: # 1초 마다(0.5초 두 번)
-            ALARM_REPORT_JSON['ALARMS'] = []
-            await random_alarm()
+        ALARM_REPORT_JSON['ALARMS'] = []
+        await random_alarm()
         await sio.emit('alarm_report', json.dumps(ALARM_REPORT_JSON, ensure_ascii=False))
-
-        await sio.sleep(0.5)
-        time_count += 1
+        await sio.sleep(1)
 
 # connect되면 알람/해제 발생
 @sio.event
