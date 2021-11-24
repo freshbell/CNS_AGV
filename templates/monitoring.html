@@ -18,7 +18,9 @@
         <div id="log" style="overflow:scroll; padding-left: 20px; display: inline-block; width: 450px; height: 810px; background-color: black; color: white;">
         </div>
     </div>
-    <div id="clients" style="background-color: grey; width: 1450px; height: 400px; display: inline-block">
+    <div id="clients" style="background-color: grey; width: 1300px; height: 400px; display: inline-block">
+    </div>
+    <div id="agv-info-box" style="background-color: grey; width: 450px; height: 400px; display: inline-block">
     </div>
 <style>
   table {
@@ -66,7 +68,6 @@
 
     function drawAgvOnBoard(xIdx, yIdx, color, agvNo){
         var tdID = (yIdx-1)*30 + (xIdx-1);
-        console.log("draw " + agvNo + " " + xIdx + " " + yIdx);
         $("td").eq(tdID).css("background-color", color);
         $("td").eq(tdID).html(agvNo.substr(5,3));
     }
@@ -79,10 +80,9 @@
             }
         }
 
-        $(document).on("click", ".client-window", function() {
-            console.log("click");
-            var agvNo = this.id;
-            console.log(agvNo);
+        $(document).on("click", "td", function() {
+            var agvNo = $(this).html();
+            console.log(agvNo)
         })
 
     });
@@ -94,7 +94,6 @@
         var agvNo = data['AGV_NO'];
         var alarms = data['ALARMS'];
         for (var i = 0; i < alarms.length; i++) {
-            console.log(alarms[i]['ALARM_STATUS'])
             if (alarms[i]['ALARM_STATUS'] == '1') {
                 $("#log").append("<p style=\"color: red; padding: 0px; margin: 0px;\">알람 발생!!! " + agvNo + ": " + alarms_dict[alarms[i]['ALARM_CD']] + "!!!</p>");
             }
@@ -118,7 +117,6 @@
         drawAgvOnBoard(origXIdx, origYIdx, "#FFFFFF", "");
         delete agvList[agvNo];
         $('#log').scrollTop($('#log').prop('scrollHeight'));
-        console.log(agvList);
     });
 
 
