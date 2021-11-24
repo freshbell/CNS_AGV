@@ -8,14 +8,14 @@
 </head>
 <body>
     <div id="server" style="max-height: 1000px; posision: relative">
-        <div id="map" style="width:980px; height:680px; display: inline-block;">
-            <table style="width:980px; max-height:980px">
+        <div id="map" style="font-size: 10px ;width:1300px; height:810px; display: inline-block;">
+            <table style="width:1300px; max-height:980px">
                 <tbody>
 
                 </tbody>
             </table>
         </div>
-        <div id="log" style="overflow:scroll; padding-left: 20px; display: inline-block; width: 450px; height: 680px; background-color: black; color: white;">
+        <div id="log" style="overflow:scroll; padding-left: 20px; display: inline-block; width: 450px; height: 810px; background-color: black; color: white;">
         </div>
     </div>
     <div id="clients" style="background-color: grey; width: 1450px; height: 400px; display: inline-block">
@@ -32,7 +32,7 @@
     height: 25px;
   }
   td {
-    width: 30px;
+    width: 35px;
   }
 </style>
 
@@ -66,14 +66,14 @@
 
     function drawAgvOnBoard(xIdx, yIdx, color, agvNo){
         var tdID = (yIdx-1)*30 + (xIdx-1);
-        console.log("draw " + agvNo + xIdx + yIdx);
+        console.log("draw " + agvNo + " " + xIdx + " " + yIdx);
         $("td").eq(tdID).css("background-color", color);
         $("td").eq(tdID).html(agvNo.substr(5,3));
     }
 
     $(document).ready(function(){
         for (var i = 0; i < 30; i++) {
-            $("tbody").append("<tr id=\"row" + i + "\" style=\"height: 20px\"></tr>");
+            $("tbody").append("<tr id=\"row" + i + "\" style=\"height: 25px\"></tr>");
             for (var j = 0; j < 30; j++) {
                 $("#row" + i).append("<td id=\"" + (j+i*30) + "\" style=\"text-align:center;\"></td>");
             }
@@ -88,11 +88,13 @@
     });
 
 
-    socket.on('alarm_to_monitor', function(data) {
+    socket.on('alarm_to_monitor', function(data) { 
+
         data = JSON.parse(data);
         var agvNo = data['AGV_NO'];
         var alarms = data['ALARMS'];
         for (var i = 0; i < alarms.length; i++) {
+            console.log(alarms[i]['ALARM_STATUS'])
             if (alarms[i]['ALARM_STATUS'] == '1') {
                 $("#log").append("<p style=\"color: red; padding: 0px; margin: 0px;\">알람 발생!!! " + agvNo + ": " + alarms_dict[alarms[i]['ALARM_CD']] + "!!!</p>");
             }
@@ -100,14 +102,23 @@
                 $("#log").append("<p style=\"color: blue; padding: 0px; margin: 0px;\">알람 해제!!! " + agvNo + ": " + alarms_dict[alarms[i]['ALARM_CD']] + "!!!</p>");
             }
         }
+        $('#log').scrollTop($('#log').prop('scrollHeight'));
     });
 
     socket.on('agv_connect_to_monitor', function(agvNo) {
         $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">" + agvNo + "가 연결되었습니다.</p>");
+        $('#log').scrollTop($('#log').prop('scrollHeight'));
     });
 
     socket.on('agv_disconnect_to_monitor', function(agvNo) {
         $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">" + agvNo + "가 없어졌습니다.</p>");
+        var origLoc = agvList[agvNo]['LOCATION'];
+        var origXIdx = Number(origLoc.substr(0,4));
+        var origYIdx = Number(origLoc.substr(4,4));
+        drawAgvOnBoard(origXIdx, origYIdx, "#FFFFFF", "");
+        delete agvList[agvNo];
+        $('#log').scrollTop($('#log').prop('scrollHeight'));
+        console.log(agvList);
     });
 
 
@@ -119,13 +130,16 @@
         var yIdx = Number(loc.substr(4,4));
         drawAgvOnBoard(xIdx, yIdx, "#00FF00", data['AGV_NO']);
         var agvNo = data['AGV_NO'];
-        var origLoc = agvList[agvNo]['LOCATION'];
-        if (origLoc != loc) {
-            var origXIdx = Number(origLoc.substr(0,4));
-            var origYIdx = Number(origLoc.substr(4,4));
-            drawAgvOnBoard(origXIdx, origYIdx, "#000000", "");
+        if (agvNo in agvList) {
+            var origLoc = agvList[agvNo]['LOCATION'];
+            if (origLoc != loc) {
+                var origXIdx = Number(origLoc.substr(0,4));
+                var origYIdx = Number(origLoc.substr(4,4));
+                drawAgvOnBoard(origXIdx, origYIdx, "#FFFFFF", "");
+            }
         }
         agvList[agvNo] = data;
+        $('#log').scrollTop($('#log').prop('scrollHeight'));
     });
 
 
