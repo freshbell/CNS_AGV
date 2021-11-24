@@ -20,7 +20,7 @@
     </div>
     <div id="clients" style="background-color: grey; width: 1300px; height: 400px; display: inline-block">
     </div>
-    <div id="agv-info-box" style="background-color: grey; width: 450px; height: 400px; display: inline-block">
+    <div id="agv-info-box" style="padding-left: 20px; background-color: grey; width: 450px; height: 400px; display: inline-block">
     </div>
 <style>
   table {
@@ -81,8 +81,23 @@
         }
 
         $(document).on("click", "td", function() {
-            var agvNo = $(this).html();
-            console.log(agvNo)
+            var agvNo = 'AGV00' + $(this).html()
+            var agvStatus = agvList[agvNo];
+            $("#agv-info-box").html("");
+            $("#agv-info-box").append("<h1 style=\"margin: 0; padding: 0;\">" + agvNo + "</h1>");
+            $("#agv-info-box").append("DATA_TYPE : " + agvStatus['DATA_TYPE'] + "<br>" + 
+                                "AGV_NO : " + agvStatus['AGV_NO'] + "<br>" +
+                                "LOCATION : " + agvStatus['LOCATION'] + "<br>" +
+                                "STATE : " + agvStatus['STATE'] + "<br>" +
+                                "MODE : " + agvStatus['MODE'] + "<br>" +
+                                "DIRECTION : " + agvStatus['DIRECTION'] + "<br>" +
+                                "MAX_VELOCITY : " + agvStatus['MAX_VELOCITY'] + "<br>" +
+                                "TILT_MAX_ANGLE : " + agvStatus['TILT_MAX_ANGLE'] + "<br>" +
+                                "BELT_MAX_SPEED : " + agvStatus['BELT_MAX_SPEED'] + "<br>" +
+                                "COMMAND_WAIT_TIME : " + agvStatus['COMMAND_WAIT_TIME'] + "<br>" +
+                                "MIN_VOLTAGE : " + agvStatus['MIN_VOLTAGE'] + "<br>" +
+                                "BATTERY_LVL : " + agvStatus['BATTERY_LVL'] + "<br>" +
+                                "AGV_FIRMWARE_VERSION :" + agvStatus['AGV_FIRMWARE_VERSION']);
         })
 
     });
