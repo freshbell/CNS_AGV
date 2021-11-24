@@ -87,20 +87,6 @@
 
     });
 
-/*    socket.on('authenticationSuccess', function(data) {
-        var loc = data['LOCATION'].split(',');
-        var xIdx = Number(loc[0]);
-        var yIdx = Number(loc[1]);
-        $("#" + (xIdx+yIdx*30)).html(data['AGV_NO']);
-        drawAgvOnBoard(xIdx, yIdx);
-    });
-*/
-/*    socket.on('alarmToIndex', function(data) {
-        var loc = data['LOCATION'].split(',');
-        var xIdx = Number(loc[0]);
-        var yIdx = Number(loc[1]);
-        warnAgvOnBoard(xIdx, yIdx);
-    });*/
 
     socket.on('alarm_to_monitor', function(data) {
         data = JSON.parse(data);
@@ -141,25 +127,6 @@
         }
         agvList[agvNo] = data;
     });
-
-/*    socket.on('agvStatusToIndex', function(agvStatus) {
-        var agvNo = agvStatus['AGV_NO'];
-        $("#agv-info").html("");
-        $("#agv-info").append("<h1>AGV " + agvNo + "</h1>");
-        $("#agv-info").append("DATA_TYPE : " + agvStatus['DATA_TYPE'] + "<br>" + 
-                                "AGV_NO : " + agvStatus['AGV_NO'] + "<br>" +
-                                "LOCATION : " + agvStatus['LOCATION'] + "<br>" +
-                                "STATE : " + agvStatus['STATE'] + "<br>" +
-                                "MODE : " + agvStatus['MODE'] + "<br>" +
-                                "DIRECTION : " + agvStatus['DIRECTION'] + "<br>" +
-                                "MAX_VELOCITY : " + agvStatus['MAX_VELOCITY'] + "<br>" +
-                                "TILT_MAX_ANGLE : " + agvStatus['TILT_MAX_ANGLE'] + "<br>" +
-                                "BELT_MAX_SPEED : " + agvStatus['BELT_MAX_SPEED'] + "<br>" +
-                                "COMMAND_WAIT_TIME : " + agvStatus['COMMAND_WAIT_TIME'] + "<br>" +
-                                "MIN_VOLTAGE : " + agvStatus['MIN_VOLTAGE'] + "<br>" +
-                                "BATTERY_LVL : " + agvStatus['BATTERY_LVL'] + "<br>" +
-                                "AGV_FIRMWARE_VERSION :" + agvStatus['AGV_FIRMWARE_VERSION']);
-    });*/
 
 
 </script>
