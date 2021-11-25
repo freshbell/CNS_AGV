@@ -19,7 +19,7 @@ with open('./json/client_json/Alarm.json', 'r', encoding='UTF-8') as f:
 sio = socketio.AsyncClient()
 
 # move 위치
-count = 0
+count,cnt = 0,0
 
 # 알람 전송
 ALARM_CD_LIST = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -58,16 +58,12 @@ async def random_alarm():
     ALARM_REPORT_JSON['ALARMS'].append(ALARM_JSON['ALARMS'][temp_start_alarm])
 
 # 알람상태/해제 전송 Thread
-async def send_alarm():
-    time_count = 0
-    while True:
-        if time_count % 2 == 0: # 1초 마다(0.5초 두 번)
-            ALARM_REPORT_JSON['ALARMS'] = []
-            await random_alarm()
+async def send_alarm():    
+    while True:        
+        ALARM_REPORT_JSON['ALARMS'] = []
+        await random_alarm()
         await sio.emit('alarm_report', json.dumps(ALARM_REPORT_JSON, ensure_ascii=False))
-
-        await sio.sleep(0.5)
-        time_count += 1
+        await sio.sleep(1)
 
 # connect되면 알람/해제 발생
 @sio.event
@@ -79,21 +75,27 @@ async def connect():
 # AGV 상태요청 receive
 @sio.on('state_request')
 async def state(data):
+    global count
     json_data = json.loads(data)
+    print("----AGV 상태요청----")
     print(json_data)
-    # AGV 상태보고 전송    
-    if json_data['DATA_TYPE'] == 'reportRqst':
+    # AGV 상태보고 전송
+    if json_data['DATA_TYPE'] == 'reportRqst':        
         await sio.emit('state_report', json.dumps(STATE_JSON, ensure_ascii=False))
 
 # AGV 이동 명령 receive
 @sio.on('move_request')
 async def move_avg(data):
-    global count
+    global count, cnt    
     move_data = json.loads(data)
+    length=len(move_data['BLOCKS'])
+    if cnt<length:
+        cnt+=1
+    else:
+        cnt=0
+    STATE_JSON['LOCATION'] = move_data['BLOCKS'][cnt]
+    print("----AGV 이동명령----")
     print(move_data)
-    await sio.sleep(3)
-    STATE_JSON['LOCATION'] = move_data['BLOCKS'][count]
-    count = count + 1 if count < len(move_data['BLOCKS']) - 1 else count
 
 # 서버 연결 해제
 @sio.event()
