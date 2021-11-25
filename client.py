@@ -57,7 +57,6 @@ async def random_alarm():
 
     ALARM_REPORT_JSON['ALARMS'].append(ALARM_JSON['ALARMS'][temp_start_alarm])
 
-# 알람상태/해제 전송 Thread
 async def send_alarm():    
     while True:        
         ALARM_REPORT_JSON['ALARMS'] = []
@@ -75,12 +74,9 @@ async def connect():
 # AGV 상태요청 receive
 @sio.on('state_request')
 async def state(data):
-    global count
     json_data = json.loads(data)
-    print("----AGV 상태요청----")
-    print(json_data)
-    # AGV 상태보고 전송
-    if json_data['DATA_TYPE'] == 'reportRqst':        
+    # AGV 상태보고 전송    
+    if json_data['DATA_TYPE'] == 'reportRqst':
         await sio.emit('state_report', json.dumps(STATE_JSON, ensure_ascii=False))
 
 # AGV 이동 명령 receive
@@ -94,8 +90,6 @@ async def move_avg(data):
     else:
         cnt=0
     STATE_JSON['LOCATION'] = move_data['BLOCKS'][cnt]
-    print("----AGV 이동명령----")
-    print(move_data)
 
 # 서버 연결 해제
 @sio.event()
