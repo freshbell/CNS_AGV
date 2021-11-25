@@ -57,9 +57,8 @@ async def random_alarm():
 
     ALARM_REPORT_JSON['ALARMS'].append(ALARM_JSON['ALARMS'][temp_start_alarm])
 
-# 알람상태/해제 전송 Thread
-async def send_alarm():
-    while True:
+async def send_alarm():    
+    while True:        
         ALARM_REPORT_JSON['ALARMS'] = []
         await random_alarm()
         await sio.emit('alarm_report', json.dumps(ALARM_REPORT_JSON, ensure_ascii=False))

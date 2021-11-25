@@ -58,10 +58,10 @@ def hello_world():
 def monitor():
     return render_template('monitoring.html')
 
-# sate, move 요청
+# 상태요청, 이동명령 요청
 def background_thread():
     while True:
-        socketio.sleep(1)
+        socketio.sleep(0.05)
         for AGV in clients.keys():
             MOVE_JSON['AGV_NO'] = AGV
             MOVE_JSON['BLOCKS'] = clients[AGV]['blocks']
@@ -96,12 +96,16 @@ def connect():
 def state(data):
     state_f.write(str(data) + "\n")
     socketio.emit('state_to_monitor', data)
+    print("----AGV 상태보고----")
+    print(data)
 
 # 알람 보고서 수신
 @socketio.on('alarm_report')
 def alarm(data):
     alarm_f.write(str(data) + "\n")
     socketio.emit('alarm_to_monitor', data)
+    print("----알람 발생/해제 보고----")
+    print(data)
 
 # 연결 해제
 @socketio.on('disconnect')
