@@ -17,3 +17,6 @@
 local) http://localhost:5000/monitoring
 
 aws) http://서버ip주소:5000/monitoring
+
+# 클라이언트 10개 열기
+exe 폴더 내에서 bat파일 실행

@@ -19,7 +19,7 @@ with open('./json/client_json/Alarm.json', 'r', encoding='UTF-8') as f:
 sio = socketio.AsyncClient()
 
 # move 위치
-count,cnt = 0,0
+count,cnt = 1,0
 
 # 알람 전송
 ALARM_CD_LIST = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -82,14 +82,16 @@ async def state(data):
 # AGV 이동 명령 receive
 @sio.on('move_request')
 async def move_avg(data):
-    global count, cnt    
+    global count, cnt
+     
     move_data = json.loads(data)
     length=len(move_data['BLOCKS'])
-    if cnt+1<length:
-        cnt+=1
-    else:
-        cnt=0
-    STATE_JSON['LOCATION'] = move_data['BLOCKS'][cnt]
+    count = count + 1
+    if count % 10 == 0:
+        if cnt+1<length:
+            cnt = cnt + 1
+            STATE_JSON['LOCATION'] = move_data['BLOCKS'][cnt]
+    
 
 # 서버 연결 해제
 @sio.event()
