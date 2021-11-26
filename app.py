@@ -99,8 +99,6 @@ def state(data):
 def alarm(data):
     alarm_f.write(str(data) + "\n")
     socketio.emit('alarm_to_monitor', data)
-    print("----알람 발생/해제 보고----")
-    print(data)
 
 # 연결 해제
 @socketio.on('disconnect')
