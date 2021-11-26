@@ -7,6 +7,7 @@ import json
 import random
 import sys
 import time
+import logging
 
 Payload.max_decode_packets = 101
 
@@ -22,6 +23,8 @@ with open('./json/server_json/Request.json', 'r', encoding='UTF-8') as f:
     STATE_REQUEST = json.load(f)
 with open('./json/server_json/Move.json', 'r', encoding='UTF-8') as f:
     MOVE_JSON = json.load(f)
+
+logging.basicConfig(filename='./log/debug.log',level=logging.DEBUG, encoding='utf-8')
 
 now = time.strftime('20%y%m%d %H%M%S')
 alarm_f = open("./log/alarm_log/alarm" + now + ".txt","w", encoding='utf-8')
@@ -93,12 +96,14 @@ def connect():
 def state(data):
     state_f.write(str(data) + "\n")
     socketio.emit('state_to_monitor', data)
+    logging.info(data)
 
 # 알람 보고서 수신
 @socketio.on('alarm_report')
 def alarm(data):
     alarm_f.write(str(data) + "\n")
     socketio.emit('alarm_to_monitor', data)
+    logging.info(data)
 
 # 연결 해제
 @socketio.on('disconnect')
