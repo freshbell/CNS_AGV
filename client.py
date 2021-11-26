@@ -85,7 +85,7 @@ async def move_avg(data):
     global count, cnt    
     move_data = json.loads(data)
     length=len(move_data['BLOCKS'])
-    if cnt<length:
+    if cnt+1<length:
         cnt+=1
     else:
         cnt=0

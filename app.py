@@ -35,11 +35,8 @@ def make_route():
     direction_x = [1,0,-1,0]
     direction_y = [0,1,0,-1]
 
-    x = random.sample(range(1, 31),1)[0]
-    y = random.sample(range(1, 31),1)[0]
-    BLOCKS = [str(x).zfill(4) + str(y).zfill(4)]
-
     x, y = random.sample(range(1,31),1)[0], random.sample(range(1,31),1)[0]
+    BLOCKS = [str(x).zfill(4) + str(y).zfill(4)]
     for _ in range(random.sample(range(20, 30),1)[0]):
         while True:
             direction = random.sample(range(0,3),1)[0]
@@ -96,8 +93,6 @@ def connect():
 def state(data):
     state_f.write(str(data) + "\n")
     socketio.emit('state_to_monitor', data)
-    print("----AGV 상태보고----")
-    print(data)
 
 # 알람 보고서 수신
 @socketio.on('alarm_report')
