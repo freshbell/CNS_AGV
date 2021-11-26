@@ -18,9 +18,9 @@
         <div id="log" style="overflow:scroll; padding-left: 20px; display: inline-block; width: 450px; height: 810px; background-color: black; color: white;">
         </div>
     </div>
-    <div id="clients" style="background-color: grey; width: 1300px; height: 400px; display: inline-block">
+    <div id="clients" style="padding-left: 5px; position: absolute; background-color: grey; width: 1295px; height: 400px; display: inline-block">
     </div>
-    <div id="agv-info-box" style="padding-left: 20px; background-color: grey; width: 450px; height: 400px; display: inline-block">
+    <div id="agv-info-box" style="font-size: 18px; position: absolute; margin-left: 1305px; padding-left: 10px;background-color: grey; width: 440px; height: 400px; display: inline-block">
     </div>
 <style>
   table {
@@ -56,7 +56,7 @@
     var socket = io.connect('http://localhost:5000?client=monitor', headers={'AGV_NO':'Monitoring'});
     var agvCount = 0;
     var agvList = {};
-
+    var agvSelected = undefined;
     function findAGV(agvNo) {
         for (var i = 0; i < agvList.length; i++) {
             if (agvList[i]["AGV_NO"] == agvNo) {
@@ -81,8 +81,33 @@
         }
 
         $(document).on("click", "td", function() {
-            var agvNo = 'AGV00' + $(this).html()
+            if ($(this).html() == "") {
+                return;
+            }
+            var agvNo = 'AGV00' + $(this).html();
+            agvSelected = agvNo;
             var agvStatus = agvList[agvNo];
+            $("#agv-info-box").html("");
+            $("#agv-info-box").append("<h1 style=\"margin: 0; padding: 0;\">" + agvNo + "</h1>");
+            $("#agv-info-box").append("DATA_TYPE : " + agvStatus['DATA_TYPE'] + "<br>" + 
+                                "AGV_NO : " + agvStatus['AGV_NO'] + "<br>" +
+                                "LOCATION : " + agvStatus['LOCATION'] + "<br>" +
+                                "STATE : " + agvStatus['STATE'] + "<br>" +
+                                "MODE : " + agvStatus['MODE'] + "<br>" +
+                                "DIRECTION : " + agvStatus['DIRECTION'] + "<br>" +
+                                "MAX_VELOCITY : " + agvStatus['MAX_VELOCITY'] + "<br>" +
+                                "TILT_MAX_ANGLE : " + agvStatus['TILT_MAX_ANGLE'] + "<br>" +
+                                "BELT_MAX_SPEED : " + agvStatus['BELT_MAX_SPEED'] + "<br>" +
+                                "COMMAND_WAIT_TIME : " + agvStatus['COMMAND_WAIT_TIME'] + "<br>" +
+                                "MIN_VOLTAGE : " + agvStatus['MIN_VOLTAGE'] + "<br>" +
+                                "BATTERY_LVL : " + agvStatus['BATTERY_LVL'] + "<br>" +
+                                "AGV_FIRMWARE_VERSION :" + agvStatus['AGV_FIRMWARE_VERSION']);
+        })
+        $(document).on("click", ".agv", function() {
+            var agvNo = $(this).attr('id');
+            console.log(agvNo);
+            var agvStatus = agvList[agvNo];
+            agvSelected = agvNo;
             $("#agv-info-box").html("");
             $("#agv-info-box").append("<h1 style=\"margin: 0; padding: 0;\">" + agvNo + "</h1>");
             $("#agv-info-box").append("DATA_TYPE : " + agvStatus['DATA_TYPE'] + "<br>" + 
@@ -109,9 +134,11 @@
         for (var i = 0; i < alarms.length; i++) {
             if (alarms[i]['ALARM_STATUS'] == '1') {
                 $("#log").append("<p style=\"color: red; padding: 0px; margin: 0px;\">알람 발생!!! " + agvNo + ": " + alarms_dict[alarms[i]['ALARM_CD']] + "!!!</p>");
+                $("#" + agvNo).append("<p class= \"alarm" + alarms[i]['ALARM_CD'] + "\" style=\"color: red; padding: 0px; margin: 0px;\">" + alarms_dict[alarms[i]['ALARM_CD']] + "!!!</p>");
             }
             else {
                 $("#log").append("<p style=\"color: blue; padding: 0px; margin: 0px;\">알람 해제!!! " + agvNo + ": " + alarms_dict[alarms[i]['ALARM_CD']] + "!!!</p>");
+                $("#" + agvNo).children(".alarm" + alarms[i]['ALARM_CD']).remove();
             }
         }
         $('#log').scrollTop($('#log').prop('scrollHeight'));
@@ -119,19 +146,23 @@
 
     socket.on('agv_connect_to_monitor', function(agvNo) {
         $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">" + agvNo + "가 연결되었습니다.</p>");
+        $("#clients").append("<div class=\"agv\" id=\"" + agvNo + "\" style=\" margin: 3px; background-color: #00FF00; width: 209px; height: 180px; text-align: center; display: inline-block;\"><h3>" + agvNo + "</h3></div>");
         $('#log').scrollTop($('#log').prop('scrollHeight'));
+        agvList[agvNo] = undefined;
     });
 
+
     socket.on('agv_disconnect_to_monitor', function(agvNo) {
-        $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">" + agvNo + "가 없어졌습니다.</p>");
+         $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">" + agvNo + "가 없어졌습니다.</p>");
         var origLoc = agvList[agvNo]['LOCATION'];
         var origXIdx = Number(origLoc.substr(0,4));
         var origYIdx = Number(origLoc.substr(4,4));
         drawAgvOnBoard(origXIdx, origYIdx, "#FFFFFF", "");
         delete agvList[agvNo];
-        $('#log').scrollTop($('#log').prop('scrollHeight'));
+        $("#" + agvNo).remove();
+        $('#log').scrollTop($('#log').prop(
+            'scrollHeight'));
     });
-
 
 
     socket.on('state_to_monitor', function(data){
@@ -139,16 +170,27 @@
         var loc = data['LOCATION'];
         var xIdx = Number(loc.substr(0,4));
         var yIdx = Number(loc.substr(4,4));
-        drawAgvOnBoard(xIdx, yIdx, "#00FF00", data['AGV_NO']);
+        var agvNo = data['AGV_NO'];
+        var color = "#00FF00";
+        if (agvNo == agvSelected) {
+            color = "#5555FF";
+        }
+        drawAgvOnBoard(xIdx, yIdx, color, data['AGV_NO']);
         var agvNo = data['AGV_NO'];
         if (agvNo in agvList) {
-            var origLoc = agvList[agvNo]['LOCATION'];
-            if (origLoc != loc) {
-                var origXIdx = Number(origLoc.substr(0,4));
-                var origYIdx = Number(origLoc.substr(4,4));
-                drawAgvOnBoard(origXIdx, origYIdx, "#FFFFFF", "");
+            if (agvList[agvNo] != undefined){
+                var origLoc = agvList[agvNo]['LOCATION'];
+                if (origLoc != loc) {
+                    var origXIdx = Number(origLoc.substr(0,4));
+                    var origYIdx = Number(origLoc.substr(4,4));
+                    drawAgvOnBoard(origXIdx, origYIdx, "#FFFFFF", "");
+                }
             }
         }
+        else {
+            $("#clients").append("<div class=\"agv\" id=\"" + agvNo + "\" style=\" margin: 3px; background-color: #00FF00; width: 209px; height: 180px; text-align: center; display: inline-block;\"><h3>" + agvNo + "</h3></div>");
+        }
+
         agvList[agvNo] = data;
         $('#log').scrollTop($('#log').prop('scrollHeight'));
     });

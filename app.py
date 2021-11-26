@@ -76,7 +76,7 @@ def connect():
     client = request.args.get('client')
     if client == 'monitor':     #모니터 connect 
         print('Monitor connected')
-    else:
+    elif client is not None:
         print(str(client) + ' connected')
         clients[client] = {}
         clients[client]['sid'] = request.sid

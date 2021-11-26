@@ -110,5 +110,4 @@ if __name__ == '__main__':
     argument = sys.argv
     AGV_NO = argument[1]
     server = argument[2]
-
     asyncio.run(main())
