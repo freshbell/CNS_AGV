@@ -24,11 +24,14 @@ with open('./json/server_json/Request.json', 'r', encoding='UTF-8') as f:
 with open('./json/server_json/Move.json', 'r', encoding='UTF-8') as f:
     MOVE_JSON = json.load(f)
 
-logging.basicConfig(filename='./log/debug.log',level=logging.DEBUG, encoding='utf-8')
+
 
 now = time.strftime('20%y%m%d %H%M%S')
+
 alarm_f = open("./log/alarm_log/alarm" + now + ".txt","w", encoding='utf-8')
 state_f = open("./log/state_log/state" + now + ".txt","w", encoding='utf-8')
+
+logging.basicConfig(filename='./log/debug' + now + '.log',level=logging.DEBUG, encoding='utf-8')
 
 clients = {}
 
