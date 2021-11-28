@@ -36,6 +36,27 @@
   td {
     width: 35px;
   }
+
+  p {
+    margin: 0px;
+  }
+
+  h1, h2, h3 {
+    margin: 0px;
+  }
+
+  #mov-to {
+    width: 100px;
+    height: 30px;
+    font-size: 20px;
+    margin-right: 10px;
+  }
+
+  #btn-mov {
+    height: 30px;
+    font-size: 18px;
+    max-height: 30px;
+  }
 </style>
 
 </body>
@@ -89,9 +110,9 @@
             var agvStatus = agvList[agvNo];
             $("#agv-info-box").html("");
             $("#agv-info-box").append("<h1 style=\"margin: 0; padding: 0;\">" + agvNo + "</h1>");
-            $("#agv-info-box").append("DATA_TYPE : " + agvStatus['DATA_TYPE'] + "<br>" + 
+            $("#agv-info-box").append("DATA_TYPE : " + agvStatus['DATA_TYPE'] + "<br><input type=\"hidden\" class=\"status-info-agvNo\" value=\"" + agvNo + "\">" + 
                                 "AGV_NO : " + agvStatus['AGV_NO'] + "<br>" +
-                                "LOCATION : " + agvStatus['LOCATION'] + "<br>" +
+                                "LOCATION : " + agvStatus['LOCATION'] + "  <input type=\"text\" id=\"mov-to\" placeholder=\"00XX00XX\"><input type=\"button\" id=\"btn-mov\" value=\"이동\"><br>" +
                                 "STATE : " + agvStatus['STATE'] + "<br>" +
                                 "MODE : " + agvStatus['MODE'] + "<br>" +
                                 "DIRECTION : " + agvStatus['DIRECTION'] + "<br>" +
@@ -110,9 +131,9 @@
             agvSelected = agvNo;
             $("#agv-info-box").html("");
             $("#agv-info-box").append("<h1 style=\"margin: 0; padding: 0;\">" + agvNo + "</h1>");
-            $("#agv-info-box").append("DATA_TYPE : " + agvStatus['DATA_TYPE'] + "<br>" + 
+            $("#agv-info-box").append("DATA_TYPE : " + agvStatus['DATA_TYPE'] + "<br><input type=\"hidden\" class=\"status-info-agvNo\" value=\"" + agvNo + "\">" + 
                                 "AGV_NO : " + agvStatus['AGV_NO'] + "<br>" +
-                                "LOCATION : " + agvStatus['LOCATION'] + "<br>" +
+                                "LOCATION : " + agvStatus['LOCATION'] + "  <input type=\"text\" id=\"mov-to\" placeholder=\"00XX00XX\"><input type=\"button\" id=\"btn-mov\" value=\"이동\"><br>" +
                                 "STATE : " + agvStatus['STATE'] + "<br>" +
                                 "MODE : " + agvStatus['MODE'] + "<br>" +
                                 "DIRECTION : " + agvStatus['DIRECTION'] + "<br>" +
@@ -123,6 +144,21 @@
                                 "MIN_VOLTAGE : " + agvStatus['MIN_VOLTAGE'] + "<br>" +
                                 "BATTERY_LVL : " + agvStatus['BATTERY_LVL'] + "<br>" +
                                 "AGV_FIRMWARE_VERSION :" + agvStatus['AGV_FIRMWARE_VERSION']);
+        })
+
+        $(document).on("click", "#btn-mov", function() {
+            var agvNo = $(this).parent().children('.status-info-agvNo').val();
+            var loc = $(this).parent().children('#mov-to').val();
+            var xDest = Number(loc.substr(0,4));
+            var yDest = Number(loc.substr(4,4));
+            var len = loc.length;
+            if (isNaN(loc) || len != 8 || xDest > 30 || xDest <= 0 || yDest > 30 || yDest <= 0) {
+                alert('00XX00XX');
+                return;
+            }
+            var obj = {'DATA_TYPE': 'MOVE_REQUEST', 'AGV_NO':agvNo, 'LOCATION': loc};
+            socket.emit('move_request_from_monitor', obj);
+
         })
     });
 
@@ -146,8 +182,10 @@
 
     socket.on('agv_connect_to_monitor', function(agvNo) {
         $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">" + agvNo + "가 연결되었습니다.</p>");
+        $("#clients").children("#" + agvNo).remove();
         $("#clients").append("<div class=\"agv\" id=\"" + agvNo + "\" style=\" margin: 3px; background-color: #00FF00; width: 209px; height: 180px; text-align: center; display: inline-block;\"><h3>" + agvNo + "</h3></div>");
         $('#log').scrollTop($('#log').prop('scrollHeight'));
+        
         agvList[agvNo] = undefined;
     });
 
@@ -192,6 +230,20 @@
         }
 
         agvList[agvNo] = data;
+        $('#log').scrollTop($('#log').prop('scrollHeight'));
+    });
+
+    socket.on('connect', function() {
+        $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">서버와 연결되었습니다.</p>");
+        $("td").css("background-color", "#FFFFFF");
+        $("td").html("");
+        $("#clients").html("");
+        $("#agv-info-box").html("");
+        $('#log').scrollTop($('#log').prop('scrollHeight'));
+    });
+    socket.on('disconnect', function() {
+        agvList = [];
+        $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">서버와 연결이 끊어졌습니다.</p>");
         $('#log').scrollTop($('#log').prop('scrollHeight'));
     });
 
