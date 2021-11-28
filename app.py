@@ -2,7 +2,6 @@ from threading import Lock
 from flask import Flask, render_template, session, request, copy_current_request_context
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 from engineio.payload import Payload
-from flask_cors import CORS
 import json
 import random
 import sys
@@ -123,3 +122,4 @@ if __name__=="__main__":
     host = argument[1] if len(argument) == 2 else 'localhost'
 
     socketio.run(app, host=host, debug=True)
+    socketio.run()

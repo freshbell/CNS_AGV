@@ -1,0 +1,11 @@
+WARNING:werkzeug:WebSocket transport not available. Install simple-websocket for improved performance.
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 193-729-271
+INFO:werkzeug: * Running on http://localhost:5000/ (Press CTRL+C to quit)
+ERROR:engineio.server:Invalid session KsdIiLhGJXrJpM1rAAAA (further occurrences of this error will be logged with level INFO)
+INFO:werkzeug:127.0.0.1 - - [27/Nov/2021 16:38:36] "[31m[1mPOST /socket.io/?client=monitor&EIO=4&transport=polling&t=NrWLDqm&sid=KsdIiLhGJXrJpM1rAAAA HTTP/1.1[0m" 400 -
+ERROR:engineio.server:The WebSocket transport is not available, you must install a WebSocket server that is compatible with your async mode to enable it. See the documentation for details. (further occurrences of this error will be logged with level INFO)
+INFO:werkzeug:127.0.0.1 - - [27/Nov/2021 16:38:37] "GET /socket.io/?client=monitor&EIO=4&transport=polling&t=NrWLEMl HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Nov/2021 16:38:37] "POST /socket.io/?client=monitor&EIO=4&transport=polling&t=NrWLEZc&sid=TRmQNi87BWmGGtHuAAAA HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Nov/2021 16:38:37] "GET /socket.io/?client=monitor&EIO=4&transport=polling&t=NrWLEZd&sid=TRmQNi87BWmGGtHuAAAA HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Nov/2021 16:38:54] "GET /socket.io/?client=agv00001&transport=polling&EIO=4&t=1637998732.8659668 HTTP/1.1" 200 -
