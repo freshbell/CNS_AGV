@@ -200,8 +200,8 @@
         $("#log").append("<p style=\"color: white; padding: 0px; margin: 0px;\">" + agvNo + "가 연결되었습니다.</p>");
         $("#clients").children("#" + agvNo).remove();
         var n = Object.keys(agvList).length;
-        var marginleft = (n+1)*6 + n*209;
-        var margintop = Math.floor(n/6)*209; 
+        var marginleft = (n%6)*3 + (n%6)*209;
+        var margintop = Math.floor(n/6)*190; 
         var child = "<div class=\"agv\" id=\"" + agvNo + "\" style=\" margin-left: " + marginleft + "px; margin-top : " + margintop + "px; position: absolute; background-color: #00FF00; width: 209px; height: 180px; text-align: center; display: inline-block;\"><h3>" + agvNo + "</h3></div>";
         $(child).appendTo('#clients');
         agvList[agvNo] = undefined;
@@ -244,7 +244,7 @@
         else {
             var n = Object.keys(agvList).length;
             console.log(n);
-            var marginleft = (n%6)*7 + (n%6)*209;
+            var marginleft = (n%6)*3 + (n%6)*209;
             var margintop = Math.floor(n/6)*190; 
             var child = "<div class=\"agv\" id=\"" + agvNo + "\" style=\" margin-left: " + marginleft + "px; margin-top : " + margintop + "px; position: absolute; background-color: #00FF00; width: 209px; height: 180px; text-align: center; display: inline-block;\"><h3>" + agvNo + "</h3></div>";
             $(child).appendTo('#clients');
