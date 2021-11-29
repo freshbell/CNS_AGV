@@ -86,7 +86,8 @@ def make_route_to_dest(agv_no, dest):
 def move_request_from_monitor(data):
     agv_no = data['AGV_NO']
     dest = data['LOCATION']
-    clients[agv_no]['destination'] = dest;
+    clients[agv_no]['destination'] = dest
+    print(str(clients[agv_no]['blocks'][-1] + str(agv_no)))
     route = make_route_to_dest(agv_no, dest)
 
 @app.route("/")
@@ -159,4 +160,3 @@ if __name__=="__main__":
     host = argument[1] if len(argument) == 2 else 'localhost'
 
     socketio.run(app, host=host, debug=True)
-    socketio.run()
