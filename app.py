@@ -7,7 +7,6 @@ import random
 import sys
 import time
 import logging
-import threading
 
 Payload.max_decode_packets = 101
 
@@ -94,11 +93,14 @@ def hello_world():
 def monitor():
     return render_template('monitoring.html')
 
+thread = None
+
 # 상태요청, 이동명령 요청
 temp = 0
 def background_thread():
     global temp
     while True:
+        ns = time.time_ns()
         time.sleep(0.05)       
         for AGV in clients.keys():
             MOVE_JSON['AGV_NO'] = AGV
@@ -109,10 +111,12 @@ def background_thread():
             socketio.emit('move_request',json.dumps(MOVE_JSON), room=clients[AGV]['sid'])
             socketio.emit('state_request',json.dumps(STATE_REQUEST), room=clients[AGV]['sid'])
 
+        print(ns - temp)
+        temp = ns
 # 연결
 @socketio.on('connect')
 def connect():
-    global connect_chk
+    global connect_chk, thread
     print(request)
     client = request.args.get('client')
     if client == 'monitor':     #모니터 connect 
@@ -125,6 +129,9 @@ def connect():
         clients[client]['blocks'] = make_route()
         clients[client]['destination'] = clients[client]['blocks'][-1]
         socketio.emit('agv_connect_to_monitor', clients[client]['AGV_NO'])
+
+        if thread is None:
+                thread = socketio.start_background_task(target=background_thread)
 
 # 상태 보고서 수신
 @socketio.on('state_report')
@@ -154,9 +161,9 @@ if __name__=="__main__":
     argument = sys.argv
     host = argument[1] if len(argument) == 2 else 'localhost'
 
-    thread = threading.Thread(target=background_thread)
-    thread.start()
+    #thread = threading.Thread(target=background_thread)
+    #thread.start()
 
     socketio.run(app, host=host, debug=True)
 
-    thread.join()
+    #thread.join()

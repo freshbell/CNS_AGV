@@ -1,0 +1,2 @@
+WARNING:werkzeug:WebSocket transport not available. Install simple-websocket for improved performance.
+INFO:werkzeug: * Restarting with stat

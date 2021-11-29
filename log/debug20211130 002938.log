@@ -1,0 +1,71 @@
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 917-660-993
+DEBUG:geventwebsocket.handler:Initializing WebSocket
+DEBUG:geventwebsocket.handler:Validating WebSocket request
+INFO:geventwebsocket.handler:127.0.0.1 - - [2021-11-30 00:29:40] "GET /socket.io/?client=agv&transport=polling&EIO=4&t=1638199778.823378 HTTP/1.1" 200 254 0.000000
+DEBUG:geventwebsocket.handler:Initializing WebSocket
+DEBUG:geventwebsocket.handler:Validating WebSocket request
+DEBUG:geventwebsocket.handler:Attempting to upgrade connection
+DEBUG:geventwebsocket.handler:WebSocket request accepted, switching protocols
+ERROR:engineio.server:message handler error
+Traceback (most recent call last):
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\flask_socketio\__init__.py", line 762, in _handle_event
+    ret = handler(auth)
+TypeError: connect() takes 0 positional arguments but 1 was given
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\engineio\server.py", line 622, in _trigger_event
+    return self.handlers[event](*args)
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\socketio\server.py", line 776, in _handle_eio_message
+    self._handle_connect(eio_sid, pkt.namespace, pkt.data)
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\socketio\server.py", line 668, in _handle_connect
+    success = self._trigger_event(
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\socketio\server.py", line 745, in _trigger_event
+    return self.handlers[namespace][event](*args)
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\flask_socketio\__init__.py", line 282, in _handler
+    return self._handle_event(handler, message, namespace, sid,
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\flask_socketio\__init__.py", line 764, in _handle_event
+    ret = handler()
+  File "D:\LG_CNS_AGV\app.py", line 135, in connect
+    if thread is None:
+UnboundLocalError: local variable 'thread' referenced before assignment
+DEBUG:geventwebsocket.handler:Closed WebSocket
+DEBUG:geventwebsocket.handler:Initializing WebSocket
+DEBUG:geventwebsocket.handler:Validating WebSocket request
+INFO:geventwebsocket.handler:127.0.0.1 - - [2021-11-30 00:29:44] "GET /socket.io/?client=agv&transport=polling&EIO=4&t=1638199784.3896933 HTTP/1.1" 200 254 0.000960
+DEBUG:geventwebsocket.handler:Initializing WebSocket
+DEBUG:geventwebsocket.handler:Validating WebSocket request
+DEBUG:geventwebsocket.handler:Attempting to upgrade connection
+DEBUG:geventwebsocket.handler:WebSocket request accepted, switching protocols
+ERROR:engineio.server:message handler error
+Traceback (most recent call last):
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\flask_socketio\__init__.py", line 762, in _handle_event
+    ret = handler(auth)
+TypeError: connect() takes 0 positional arguments but 1 was given
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\engineio\server.py", line 622, in _trigger_event
+    return self.handlers[event](*args)
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\socketio\server.py", line 776, in _handle_eio_message
+    self._handle_connect(eio_sid, pkt.namespace, pkt.data)
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\socketio\server.py", line 668, in _handle_connect
+    success = self._trigger_event(
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\socketio\server.py", line 745, in _trigger_event
+    return self.handlers[namespace][event](*args)
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\flask_socketio\__init__.py", line 282, in _handler
+    return self._handle_event(handler, message, namespace, sid,
+  File "D:\lgcns\flask\flask-socket\venv\lib\site-packages\flask_socketio\__init__.py", line 764, in _handle_event
+    ret = handler()
+  File "D:\LG_CNS_AGV\app.py", line 135, in connect
+    if thread is None:
+UnboundLocalError: local variable 'thread' referenced before assignment
+DEBUG:geventwebsocket.handler:Closed WebSocket
+INFO:werkzeug: * Detected change in 'D:\\LG_CNS_AGV\\app.py', reloading
+DEBUG:geventwebsocket.handler:Failed to write closing frame -> closing socket
+DEBUG:geventwebsocket.handler:Closed WebSocket
+DEBUG:geventwebsocket.handler:Failed to write closing frame -> closing socket
+DEBUG:geventwebsocket.handler:Closed WebSocket
