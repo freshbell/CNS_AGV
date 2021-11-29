@@ -7,15 +7,16 @@ import random
 import sys
 import time
 import logging
+import threading
 
 Payload.max_decode_packets = 101
 
-thread = None
-thread_lock = Lock()
 async_mode = None
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
-socketio = SocketIO(app, async_mode=async_mode, cors_allowed_origins='*')
+socketio = SocketIO(app, async_mode='gevent', cors_allowed_origins='*')
+
+connect_chk = False
 
 # JSON 파일 open
 with open('./json/server_json/Request.json', 'r', encoding='UTF-8') as f:
@@ -23,17 +24,12 @@ with open('./json/server_json/Request.json', 'r', encoding='UTF-8') as f:
 with open('./json/server_json/Move.json', 'r', encoding='UTF-8') as f:
     MOVE_JSON = json.load(f)
 
-
-
 now = time.strftime('20%y%m%d %H%M%S')
-
 alarm_f = open("./log/alarm_log/alarm" + now + ".txt","w", encoding='utf-8')
 state_f = open("./log/state_log/state" + now + ".txt","w", encoding='utf-8')
-
 logging.basicConfig(filename='./log/debug' + now + '.log',level=logging.DEBUG, encoding='utf-8')
 
 clients = {}
-
 def make_route():
     # 맵 크기
     MAX_N = MAX_M = 30 
@@ -61,9 +57,11 @@ def monitor():
     return render_template('monitoring.html')
 
 # 상태요청, 이동명령 요청
+temp = 0
 def background_thread():
+    global temp
     while True:
-        socketio.sleep(0.05)
+        time.sleep(0.05)       
         for AGV in clients.keys():
             MOVE_JSON['AGV_NO'] = AGV
             MOVE_JSON['BLOCKS'] = clients[AGV]['blocks']
@@ -76,7 +74,7 @@ def background_thread():
 # 연결
 @socketio.on('connect')
 def connect():
-    global thread
+    global connect_chk
     print(request)
     client = request.args.get('client')
     if client == 'monitor':     #모니터 connect 
@@ -89,9 +87,6 @@ def connect():
         clients[client]['blocks'] = make_route()
         clients[client]['destination'] = clients[client]['blocks'][-1]
         socketio.emit('agv_connect_to_monitor', clients[client]['AGV_NO'])
-        with thread_lock:
-            if thread is None:
-                thread = socketio.start_background_task(background_thread)
 
 # 상태 보고서 수신
 @socketio.on('state_report')
@@ -121,5 +116,9 @@ if __name__=="__main__":
     argument = sys.argv
     host = argument[1] if len(argument) == 2 else 'localhost'
 
+    thread = threading.Thread(target=background_thread)
+    thread.start()
+
     socketio.run(app, host=host, debug=True)
-    socketio.run()
+
+    thread.join()

@@ -75,6 +75,7 @@ async def connect():
 @sio.on('state_request')
 async def state(data):
     json_data = json.loads(data)
+    print(str(json_data))
     # AGV 상태보고 전송    
     if json_data['DATA_TYPE'] == 'reportRqst':
         await sio.emit('state_report', json.dumps(STATE_JSON, ensure_ascii=False))
@@ -92,7 +93,6 @@ async def move_avg(data):
             cnt = cnt + 1
             STATE_JSON['LOCATION'] = move_data['BLOCKS'][cnt]
     
-
 # 서버 연결 해제
 @sio.event()
 async def disconnect():
